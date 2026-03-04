@@ -1,21 +1,32 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-from fastapi import Depends
-from sqlalchemy.orm import Session
 import os
-if os.getenv("VERCEL") or os.getenv("VERCEL_URL"):
-    DATABASE_URL = "sqlite:///:memory:"  # In-memory, works everywhere
-else:
-    DATABASE_URL = "mysql+pymysql://root:@localhost/store_support_ai"
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
+from contextlib import contextmanager
 
-engine = create_engine(DATABASE_URL)
+# Vercel-safe SQLite (works everywhere)
+DATABASE_URL = "sqlite:///./healthglow.db"
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={
+        "check_same_thread": False,  # ✅ FIXES THREAD ERROR
+        "timeout": 30,
+    },
+    pool_pre_ping=True,
+    pool_recycle=300,
+)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+@contextmanager
 def get_db():
     db = SessionLocal()
     try:
         yield db
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()

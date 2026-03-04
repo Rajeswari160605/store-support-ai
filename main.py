@@ -4,23 +4,23 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from fastapi import FastAPI
+
 
 from sqlalchemy import text
-from datetime import datetime, timedelta
-import mysql.connector
+
 from passlib.context import CryptContext
+
 from fastapi.responses import Response
-from utils.security import get_password_hash
+
 from sqlalchemy import desc
 import uuid
-from fastapi import Request
+
 app_sessions = {} 
 
 from typing import Optional
 from pydantic import BaseModel
 
-from datetime import datetime, timedelta
+
 SECRET_KEY = "your-super-secret-key-change-in-prod"  # Global
 ALGORITHM = "HS256"
 
@@ -30,7 +30,7 @@ from difflib import get_close_matches
 import os
 import json
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
+
 from models import  Message
 from typing import List, Optional
 from starlette.exceptions import HTTPException as StarletteHTTPException

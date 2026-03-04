@@ -4,6 +4,8 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from fastapi import FastAPI
+
 from sqlalchemy import text
 from datetime import datetime, timedelta
 import mysql.connector
@@ -50,6 +52,9 @@ from models.SupportGroup import SupportGroup
 from categories import CATEGORIES
 
 app = FastAPI()
+@app.get("/")
+def home():
+    return {"message": "Store Support AI running"}
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")

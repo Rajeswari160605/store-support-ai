@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/admin-dashboard.css">
+<script src="/static/admin-dashboard.js"></script>
+</head>
+<body>
+
+<h2>Admin Dashboard</h2>
+
+<table border="1" id="ticketTable">
+    <thead>
+        <tr>
+            <th>Ticket No</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Department</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+
+const token = localStorage.getItem("token");
+
+// 🚨 If no token → force login
+if (!token) {
+    alert("Session expired. Please login again.");
+    window.location.href = "/";
+}
+
+// ✅ Load tickets WITH TOKEN
+async function loadTickets() {
+
+    const response = await fetch("/admin/tickets", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    if (!response.ok) {
+        alert("Access denied");
+        localStorage.clear();
+        window.location.href = "/";
+        return;
+    }
+
+    const tickets = await response.json();
+
+    const tbody = document.querySelector("#ticketTable tbody");
+    tbody.innerHTML = "";
+
+    tickets.forEach(ticket => {
+        const row = `
+            <tr>
+                <td>${ticket.ticket_number}</td>
+                <td>${ticket.category}</td>
+                <td>${ticket.priority}</td>
+                <td>${ticket.department}</td>
+                <td>${ticket.status}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+loadTickets();
+
+</script>
+
+</body>
+</html>

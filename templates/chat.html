@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Store Support AI</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    
+    <!-- COMPLETE CSS FOR WHATSAPP-STYLE CHAT (KEEPS YOUR ORIGINAL STRUCTURE) -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        /* KEEP YOUR ADMIN DASHBOARD STYLES */
+        .bg-gradient-to-r { background: linear-gradient(to right, var(--from), var(--to)); }
+        /* Add Tailwind-like classes if needed via your /static/styles.css */
+        
+        .chat-wrapper {
+    max-width: none ;    
+    width: 100vw ;      
+    margin: 0 ;          
+    height: 100vh ;     
+    border-radius: 0 ;   
+    box-shadow: none ;
+     padding: 0 ;
+     position: fixed ;
+     top: 0; left: 0; right: 0; bottom: 0;
+    background: white;
+    overflow: hidden;
+}
+        .chat-header {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        .chat-box {
+            height:  80vh;
+            width: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 16px 20px 16px;
+            background: #f8f9fa;
+             box-sizing: border-box;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 20px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .message.user {
+            margin-left: auto;
+            background: #25D366;
+            color: white;
+            text-align: right;
+        }
+        .message.bot {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            margin-right: auto;
+        }
+        .typing-indicator {
+            font-style: italic;
+            color: #666;
+        }
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+        }
+        .chat-input input[type="file"] {
+            display: none;
+        }
+        .chat-input button {
+    background: #075e54;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.file-btn {
+    background: #e5e5ea;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.file-btn:hover { background: #d1d1d6; }
+.send-btn {  /* Your existing send button styles */
+    background: #25D366;
+    /* ... rest unchanged ... */
+}
+        .chat-input button:hover:not(:disabled) {
+            background: #128C7E;
+        }
+        .chat-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 20px;
+            display: none;
+            text-align: center;
+        }
+        img {
+            max-width: 200px;
+            border-radius: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- YOUR ORIGINAL ADMIN DASHBOARD HEADER (UNCHANGED) -->
+    {% if is_admin %}
+    <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 mb-6 rounded-2xl shadow-2xl">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">👑 Admin Dashboard</h1>
+                <p class="text-blue-100">Welcome back, {{ user.name }}!</p>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="flex gap-4 flex-wrap">
+                <div class="bg-white/20 backdrop-blur-xl p-4 rounded-xl text-center">
+                    <div class="text-2xl font-bold text-yellow-300">{{ total_tickets }}</div>
+                    <div class="text-sm opacity-90">Total Tickets</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-xl p-4 rounded-xl text-center">
+                    <div class="text-2xl font-bold text-green-300">{{ open_tickets }}</div>
+                    <div class="text-sm opacity-90">Open Tickets</div>
+                </div>
+            </div>
+            
+            <a href="/admin/tickets" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                📋 View All Tickets
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- YOUR ORIGINAL WHATSAPP CHAT UI (KEEPS chat-box ID) -->
+    <div class="chat-wrapper">
+        <div class="chat-header">Store Support AI</div>
+        <div id="chat-box" class="chat-box"></div>
+        
+        <div class="error" id="errorMsg"></div>
+        
+        <form class="chat-input" id="chatForm">
+            <input type="text" id="message" placeholder="Type your message..." autocomplete="off"> 
+            <button type="button" id="fileBtn" class="file-btn">📎</button>choose file  <!-- ← ADD -->
+    
+            <input type="file" id="image" accept="image/*">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        // YOUR ORIGINAL TOKEN INTERCEPTOR (UNCHANGED - WORKS WITH ALL FETCH CALLS)
+        (function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const originalFetch = window.fetch;
+                window.fetch = function(url, options = {}) {
+                    options.headers = {
+                        ...options.headers,
+                        'Authorization': `Bearer ${token}`
+                    };
+                    return originalFetch(url, options);
+                };
+            }
+        })();
+
+        // YOUR ORIGINAL VARIABLES (UNCHANGED)
+        let token = localStorage.getItem("token");
+        let detectedCategory = "";
+        let pendingMessage = "";
+        let waitingForReference = false;
+        let sending = false;
+
+        console.log("Token found:", token ? "Yes" : "No");
+        // 🔥 FILE UPLOAD BUTTON
+document.getElementById("fileBtn").onclick = () => {
+    document.getElementById("image").click();
+};
+
+// 🔥 SHOW SELECTED FILE NAME
+document.getElementById("image").onchange = function() {
+    const fileName = this.files[0]?.name || '';
+    if (fileName) {
+        addMessage("user", `📎 ${fileName}`);
+    }
+};
+
+
+        // YOUR ORIGINAL EVENT LISTENER (UNCHANGED)
+        document.getElementById("chatForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            send();
+        });
+
+        // YOUR ORIGINAL FUNCTIONS (MINOR FIXES FOR RELIABILITY)
+        function addMessage(sender, text) {
+            const box = document.getElementById("chat-box");
+            const div = document.createElement("div");
+            div.className = `message ${sender}`;
+            div.innerHTML = text;  // ✅ FIXED: Use innerHTML for images
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function showTyping() {
+            const box = document.getElementById("chat-box");
+            const div = document.createElement("div");
+            div.className = "message bot typing-indicator";
+            div.innerText = "AI is typing...";
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function removeTyping() {
+            const box = document.getElementById("chat-box");
+            const nodes = box.getElementsByClassName("typing-indicator");
+            while (nodes.length > 0) {
+                nodes[0].parentNode.removeChild(nodes[0]);
+            }
+        }
+
+        // YOUR ORIGINAL send() FUNCTION (ENHANCED ERROR HANDLING)
+        async function send() {
+            if (sending) return;
+            sending = true;
+            const sendButton = document.querySelector("#chatForm button");
+            sendButton.disabled = true;
+            sendButton.style.opacity = "0.5";
+
+            try {
+                const messageInput = document.getElementById("message");
+                const fileInput = document.getElementById("image");
+
+                let message = messageInput.value.trim();
+                let file = fileInput.files[0];
+
+                if (!message && !file) return;
+
+                // YOUR ORIGINAL WAITING FOR IMAGE LOGIC (UNCHANGED)
+                if (waitingForReference) {
+                    if (message && message.toLowerCase() === "skip") {
+                        addMessage("user", "skip");
+                        await createTicket(null);
+                        resetState();
+                        return;
+                    }
+                    if (file) {
+                        showImagePreview(file);
+                        await createTicket(file);
+                        resetState();
+                        return;
+                    }
+                    addMessage("bot", "Please upload image or type 'skip'.");
+                    return;
+                }
+
+                // YOUR ORIGINAL NORMAL CHAT FLOW (ENHANCED)
+                if (message) {
+                    addMessage("user", message);
+                    showTyping();
+
+                    const formData = new FormData();
+                    formData.append("message", message);
+
+                    const response = await fetch("/chat", {
+                        method: "POST",
+                        body: formData  // Token auto-added by interceptor
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    removeTyping();
+
+                    if (data.type === "chat") {
+                        addMessage("bot", data.message);
+                    }
+
+                    if (data.type === "issue_detected") {
+                        detectedCategory = data.category;
+                        pendingMessage = message;
+                        waitingForReference = true;
+                        addMessage("bot", data.message);
+                    }
+                }
+
+                messageInput.value = "";
+                fileInput.value = "";
+            } catch (error) {
+                console.error("Chat error:", error);
+                removeTyping();
+                showError("Server error: " + error.message + ". Please try again.");
+                addMessage("bot", "Sorry, something went wrong. Try again?");
+            } finally {
+                sending = false;
+                const sendButton = document.querySelector("#chatForm button");
+                sendButton.disabled = false;
+                sendButton.style.opacity = "1";
+            }
+        }
+
+        // YOUR ORIGINAL createTicket() (UNCHANGED)
+        async function createTicket(file) {
+            const formData = new FormData();
+            formData.append("description", pendingMessage);
+            formData.append("category", detectedCategory);
+
+            if (file) {
+                formData.append("file", file);
+            }
+
+            const response = await fetch("/create-ticket", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            addMessage("bot", `🎫 Ticket Created: ${data.ticket_number}`);
+            resetState();
+        }
+
+        // YOUR ORIGINAL showImagePreview() (UNCHANGED)
+        function showImagePreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const box = document.getElementById("chat-box");
+                const div = document.createElement("div");
+                div.className = "message user";
+
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.style.maxWidth = "200px";
+                img.style.borderRadius = "12px";
+                img.style.marginTop = "5px";
+
+                div.appendChild(img);
+                box.appendChild(div);
+                box.scrollTop = box.scrollHeight;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // YOUR ORIGINAL resetState() (UNCHANGED)
+        function resetState() {
+            waitingForReference = false;
+            detectedCategory = "";
+            pendingMessage = "";
+            document.getElementById("message").value = "";
+            document.getElementById("image").value = "";
+        }
+
+        // NEW: ERROR DISPLAY FUNCTION
+        function showError(msg) {
+            const errorEl = document.getElementById("errorMsg");
+            errorEl.textContent = msg;
+            errorEl.style.display = "block";
+            setTimeout(() => { errorEl.style.display = "none"; }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Glow AI Partner Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .header { background: linear-gradient(135deg, #1e40af, #1e3a8a); color: white; padding: 1rem 0; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .brand-section { display: flex; align-items: center; gap: 1rem; }
+        .logo { width: 50px; height: 50px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #f97316; }
+        .nav-menu { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-menu a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; transition: background 0.3s; }
+        .nav-menu a:hover { background: rgba(255,255,255,0.1); }
+        .profile-btn { background: white; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #1e40af; cursor: pointer; transition: transform 0.2s; }
+        .profile-btn:hover { transform: scale(1.05); }
+        .footer { background: #f8fafc; padding: 2rem 0; text-align: center; color: #64748b; }
+        .feature-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s; }
+        .feature-card:hover { transform: translateY(-8px); } /* Fixed syntax */
+        
+        /* Slideshow fixes */
+        .slide { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .slide.active { display: block !important; }
+        .slide img { width: 100%; height: 250px; object-fit: cover; border-radius: 15px; }
+
+        /* 🔥 PERFECT JWP CARD STYLES - Matches screenshot exactly */
+        main { 
+            background: linear-gradient(135deg, #f7f8fa 0%, #1668b9 50%, #2752d3 100%); /* JWP dark blue gradient */
+            color: white; padding: 4rem 2rem 2rem; min-height: 70vh; position: relative; overflow: hidden;
+        }
+        .welcome-card { 
+            background: rgba(255,255,255,0.12); backdrop-filter: blur(25px); 
+            border-radius: 30px; padding: 3rem; margin: 0 auto 3rem; max-width: 1100px; min-height: 450px;
+            border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            display: flex; align-items: center; gap: 3rem; position: relative;
+        }
+        .card-content { flex: 1; z-index: 2; }
+        .card-content h1 { font-size: 3.2rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, white, #f0f9ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+        .card-content h1 span { color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24; }
+        .card-content p { font-size: 1.4rem; opacity: 0.95; margin-bottom: 2.5rem; font-weight: 400; }
+        .slideshow-container { flex-shrink: 0; width: 450px; height: 320px; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .fade { animation: fade 1.2s ease-in-out; }
+        @keyframes fade { from {opacity: .4; transform: scale(0.98);} to {opacity: 1; transform: scale(1);} }
+        .dots-container { text-align: center; padding-top: 1rem; position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); }
+        .dot { height: 14px; width: 14px; margin: 0 6px; background: rgba(255,255,255,0.4); border-radius: 50%; display: inline-block; cursor: pointer; transition: all 0.3s; }
+        .dot.active, .dot:hover { background: #fbbf24; transform: scale(1.2); box-shadow: 0 0 10px rgba(251,191,36,0.6); }
+        .action-buttons { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+        .btn-main { background: rgba(255,255,255,0.95); color: #1e293b; padding: 1.2rem 2.5rem; border-radius: 15px; font-size: 1.1rem; font-weight: 700; text-decoration: none; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.3s; border: none; cursor: pointer; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 20px 45px rgba(0,0,0,0.4); background: white; }
+        .btn-secondary { background: rgba(255,255,255,0.15); color: white; padding: 1.2rem 2.5rem; border-radius: 15px; font-size: 1.1rem; font-weight: 700; text-decoration: none; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation (UNCHANGED) -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="brand-section">
+                <div class="logo"><i class="fas fa-heart"></i></div>
+                <div class="brand-info">
+                    <h2>Health & Glow AI</h2>
+                    <span>Store Support Portal</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/chat-ui"><i class="fas fa-comments"></i> AI Support</a></li>
+                <li><a href="/my-tickets"><i class="fas fa-ticket-alt"></i> My Tickets</a></li>
+                <li id="userGreeting"></li>
+                <li class="profile-btn" onclick="localStorage.clear(); window.location.href='/login'" title="Logout"><span>HG</span></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 🔥 FIXED JWP Welcome Card - Exact screenshot match -->
+    <main>
+        <div class="welcome-card">
+            <div class="card-content">
+                <h1>Welcome to <span>Health & Glow</span><br>AI Partner Portal</h1>
+                <p>Your ultimate store support platform</p>
+                <div class="action-buttons">
+                    <a href="/chat-ui" class="btn-main"><i class="fas fa-comments"></i> Open AI Support</a>
+                    <a href="/my-tickets" class="btn-secondary"><i class="fas fa-ticket-alt"></i> My Tickets</a>
+                </div>
+            </div>
+            <div class="slideshow-container">
+                <div class="slide fade active">
+                    <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSk_9NWOK3jbnUqQyQ4x0gXuf0EeiFO_U__vBwJnVPoh1zY2wTg-PegFgG67P67">
+                </div>
+                <div class="slide fade">
+                    <img src="/static/images/digital image.png">
+                </div>
+                <div class="slide fade">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=320&fit=crop" alt="Partner Portal">
+                </div>
+                <div class="dots-container">
+                    <span class="dot active" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Grid (UNCHANGED) -->
+    <section style="padding: 4rem 2rem; background: #f6f7f8;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="feature-card">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 16px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: #1f2937;">AI Support Bot</h3>
+                <p style="color: #64748b; line-height: 1.6;">Instant help for issues. Just chat!</p>
+            </div>
+            <div class="feature-card">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ede9fe, #ddd6fe); border-radius: 16px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: #1f2937;">Smart Tickets</h3>
+                <p style="color: #64748b; line-height: 1.6;">Upload photos of issues. AI categorizes + assigns to technicians automatically.</p>
+            </div>
+            <div class="feature-card">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-radius: 16px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: #1f2937;">Store Analytics</h3>
+                <p style="color: #64748b; line-height: 1.6;">Live metrics for sales, inventory, and support ticket trends.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (UNCHANGED) -->
+    <footer class="footer">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <span>© 2026 Health & Glow. Bengaluru Store #1</span>
+                <span>Powered by AI Store Support</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 🔥 FIXED SLIDESHOW - Works perfectly now
+        let slideIndex = 1;
+        showSlides(slideIndex);
+        function showSlides(n) {
+            let slides = document.querySelectorAll('.slide');
+            let dots = document.querySelectorAll('.dot');
+            if (n > slides.length) slideIndex = 1;
+            if (n < 1) slideIndex = slides.length;
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            slides[slideIndex-1].classList.add('active');
+            dots[slideIndex-1].classList.add('active');
+        }
+        function currentSlide(n) { showSlides(slideIndex = n); }
+        setInterval(() => { showSlides(slideIndex += 1); }, 4000);
+
+        // Your existing script (UNCHANGED)
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = '/login'; return; }
+
+            const apiFetch = async (url, options = {}) => {
+                return fetch(url, {
+                    ...options,
+                    headers: { ...options.headers, 'Authorization': `Bearer ${token}` }
+                });
+            };
+
+            try {
+                const response = await apiFetch('/api/my-tickets');
+                if (!response.ok) throw new Error('Auth failed');
+                const data = await response.json();
+                const userGreeting = document.getElementById('userGreeting');
+                if (userGreeting) {
+                    userGreeting.innerHTML = `<i class="fas fa-user"></i> ${data.store_name} Manager`;
+                }
+                document.querySelector('.footer span:first-child').textContent = `© 2026 Health & Glow. ${data.store_name}`;
+                console.log('✅ Home loaded for:', data.store_name);
+            } catch (error) {
+                console.error('Auth error:', error);
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+
+            // Nav click handlers (unchanged)
+            document.querySelector('a[href="/chat-ui"]').addEventListener('click', async (e) => {
+                e.preventDefault();
+                try { await apiFetch('/api/my-tickets'); window.location.href = '/chat-ui'; } 
+                catch { window.location.href = '/login'; }
+            });
+            document.querySelector('a[href="/my-tickets"]').addEventListener('click', async (e) => {
+                e.preventDefault();
+                try { const res = await apiFetch('/api/my-tickets'); window.location.href = '/my-tickets'; } 
+                catch { window.location.href = '/login'; }
+            });
+        });
+    </script>
+</body>
+</html>

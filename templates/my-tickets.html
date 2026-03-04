@@ -1,0 +1,66 @@
+<!-- templates/my-tickets.html - Store Manager View -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets - Health & Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            
+            <div>
+                <h1 class="text-4xl md:text-5xl font-black text-gray-900 flex items-center">
+                    <i class="fas fa-ticket-alt text-indigo-500 mr-4 text-3xl"></i>
+                    My Tickets
+                </h1>
+            </div>
+            <span id="storeName" class="text-2xl font-bold text-indigo-600 bg-indigo-100 px-4 py-2 rounded-full">Loading...</span>
+        </div>
+
+        <!-- Search & Tabs -->
+        <div class="flex flex-col lg:flex-row gap-4 mb-8">
+            <input 
+                type="search" 
+                id="searchInput" 
+                placeholder="Search tickets by number, description..." 
+                class="flex-1 px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            >
+            <nav class="tickets-tabs flex flex-wrap gap-2" role="tablist" aria-label="Filter tickets by status">
+                <button class="tab px-6 py-3 font-semibold text-sm rounded-full bg-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 active" data-status="All" role="tab" aria-selected="true" tabindex="0">
+                    All <span id="allCount" class="ml-1 bg-white/20 px-2 py-1 rounded-full">(0)</span>
+                </button>
+                <button class="tab px-6 py-3 font-semibold text-sm border-2 border-indigo-200 text-indigo-700 bg-white/50 hover:bg-indigo-100 rounded-full transition-all duration-200" data-status="Open" role="tab" aria-selected="false" tabindex="-1">
+                    Open <span id="openCount" class="ml-1 bg-green-200 text-green-800 px-2 py-1 rounded-full text-xs">(0)</span>
+                </button>
+                <button class="tab px-6 py-3 font-semibold text-sm border-2 border-yellow-200 text-yellow-800 bg-white/50 hover:bg-yellow-100 rounded-full transition-all duration-200" data-status="In Progress" role="tab" aria-selected="false" tabindex="-1">
+                    In Progress <span id="progressCount" class="ml-1 bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full text-xs">(0)</span>
+                </button>
+                <button class="tab px-6 py-3 font-semibold text-sm border-2 border-gray-200 text-gray-700 bg-white/50 hover:bg-gray-100 rounded-full transition-all duration-200" data-status="Closed" role="tab" aria-selected="false" tabindex="-1">
+                    Closed <span id="closedCount" class="ml-1 bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs">(0)</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tickets Grid -->
+         <div id="ticketsList" class="flex-1 min-h-[600px] w-full">
+    <!-- Table will fill this completely -->
+</div>
+        <main id="ticketsList" class="tickets-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="tabpanel" aria-labelledby="all-tab" aria-live="polite">
+            <!-- Loading skeleton -->
+            <div class="col-span-full text-center py-12 text-gray-500">
+                <i class="fas fa-spinner fa-spin text-4xl mb-4 mx-auto block"></i>
+                <p>Loading your tickets...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/my-tickets.js"></script>
+    <!-- Or inline if you prefer, but external is cleaner -->
+</body>
+</html>

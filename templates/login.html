@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health & Glow AI - Store Support Login</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <!-- [Your existing HTML unchanged until form] -->
+    <div class="login-header">
+      <div class="logo-circle">
+        <i class="fas fa-heart"></i>
+      </div>
+      <h1>Health & Glow AI</h1>
+      <p>Store Support Portal</p>
+    </div>
+
+    <form id="loginForm" class="login-form">
+      <div id="errorMessage" class="error-message" style="display:none;">
+        <i class="fas fa-exclamation-circle"></i>
+        Invalid email or password
+      </div>
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="email" name="username" required placeholder=" ">
+          <label for="email" class="floating-label">Email Address</label>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="password" name="password" required placeholder=" ">
+          <label for="password" class="floating-label">Password</label>
+          <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+        </div>
+      </div>
+
+      <button type="submit" id="loginBtn" class="login-button">
+        <span class="btn-text" id="btnText">Sign In</span>
+        <div class="loading-spinner" id="loadingSpinner"></div>
+      </button>
+      
+      <div style="margin-top: 16px; text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+        New user? <a href="/signup" style="color: #f32d0a; text-decoration: underline; font-weight: 500;">Create Account</a>
+      </div>
+
+      <div id="successOverlay" class="success-overlay" style="display:none;">
+        <div class="success-card">
+          <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h2 id="welcomeText">Welcome Back!</h2>
+          <p id="redirectText">Redirecting to Dashboard...</p>
+          <div class="countdown">
+            <span id="countdown">3</span> seconds
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="login-footer">
+      <p>&copy; 2026 Health & Glow. Powered by AI Support</p>
+    </div>
+  </div>
+
+  <!-- 🔥 FIXED LOGIN SCRIPT -->
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const btnText = document.getElementById('btnText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const successOverlay = document.getElementById('successOverlay');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    // 🔥 FIXED LOGIN SUBMIT
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Show loading
+      loginBtn.disabled = true;
+      btnText.textContent = 'Signing In...';
+      loadingSpinner.style.display = 'block';
+      errorMessage.style.display = 'none';
+
+      try {
+        const formData = new FormData(loginForm);  // ✅ Uses name="username/password"
+        
+        const response = await fetch('/login', {
+          method: 'POST',
+          body: formData  // ✅ Form data for OAuth2PasswordRequestForm
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.access_token) {
+          // 🔥 SAVE TOKEN & REDIRECT
+          localStorage.setItem('token', data.access_token);
+          console.log('✅ Token saved, role:', data.role);
+          
+          // Show success
+          document.getElementById('welcomeText').textContent = `Welcome ${emailInput.value}!`;
+          successOverlay.style.display = 'flex';
+          
+          // Auto redirect after 2s
+          setTimeout(() => {
+            window.location.href = '/';  
+          }, 2000);
+          
+        } else {
+          throw new Error(data.detail || 'Login failed');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMessage.textContent = error.message || 'Invalid credentials';
+        errorMessage.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+        btnText.textContent = 'Sign In';
+        loadingSpinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

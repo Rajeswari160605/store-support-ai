@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Health & Glow AI</title>
+
+  <!-- Icons + CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/admin-dashboard.css" />
+
+  <!-- Main dashboard JS (stats + tickets + groups) -->
+  <script src="/static/admin-dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-heart"></i>
+          <span>H&G Admin</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="overview">
+          <i class="fas fa-chart-line"></i><span>Overview</span>
+        </a>
+        <a href="#" class="nav-item" data-section="tickets">
+          <i class="fas fa-ticket-alt"></i><span>Tickets</span>
+        </a>
+        <a href="#" class="nav-item" data-section="stores">
+          <i class="fas fa-store"></i><span>Stores</span>
+        </a>
+        <a href="#" class="nav-item" data-section="support-groups">
+          <i class="fas fa-users"></i><span>Support Groups</span>
+        </a>
+        <a href="#" class="nav-item" data-section="reports">
+          <i class="fas fa-chart-bar"></i><span>Reports</span>
+        </a>
+         <a href="#" class="nav-item" data-section="engineer portal">
+          <i class="fas fa-chart-bar"></i><span>Engineer Portal</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="avatar">A</div>
+          <div>
+            <div class="user-name">Admin User</div>
+            <div class="user-role">Super Admin</div>
+          </div>
+        </div>
+        <button class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="header-title">
+            <h1>Admin Dashboard</h1>
+            <p>Health & Glow Store Management</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="notification">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
+          </div>
+          <div class="profile-menu">
+            <div class="avatar-small">A</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT AREA -->
+      <div class="content-area">
+        <!-- =========================
+             OVERVIEW SECTION
+        ========================== -->
+        <section id="overview" class="content-section active">
+          <!-- STATS CARDS -->
+          <div class="stats-grid">
+            <div class="stat-card critical">
+              <div class="stat-icon">
+                <i class="fas fa-ticket-alt"></i>
+              </div>
+              <div class="stat-info">
+                <p>Total Tickets</p>
+                <div class="stat-number" id="totalTickets">0</div>
+              </div>
+            </div>
+
+            <div class="stat-card warning">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-info">
+                <p>Open Tickets</p>
+                <div class="stat-number" id="openTickets">0</div>
+              </div>
+            </div>
+
+            <div class="stat-card success">
+              <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-info">
+                <p>Resolved</p>
+                <div class="stat-number" id="resolvedTickets">0</div>
+              </div>
+            </div>
+
+            <div class="stat-card info">
+              <div class="stat-icon">
+                <i class="fas fa-store"></i>
+              </div>
+              <div class="stat-info">
+                <p>Stores Active</p>
+                <div class="stat-number" id="totalStores">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TICKETS TABLE (same as Tickets tab) -->
+          <div class="table-container">
+            <div class="table-header">
+              <h2>All Tickets</h2>
+              <div class="table-controls">
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="Search tickets..."
+                />
+                <select class="filter-select">
+                  <option>All Status</option>
+                  <option>Open</option>
+                  <option>In Progress</option>
+                  <option>Resolved</option>
+                  <option>Closed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Store</th>
+                    <th>City</th>
+                    <th>Issue</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketsTableBody">
+                  <!-- Filled by admin-dashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================
+             TICKETS SECTION (optional separate tab)
+        ========================== -->
+        <section id="tickets" class="content-section">
+          <div class="table-container">
+            <div class="table-header">
+              <h2>All Tickets</h2>
+              <div class="table-controls">
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="Search tickets..."
+                />
+                <select class="filter-select">
+                  <option>All Status</option>
+                  <option>Open</option>
+                  <option>In Progress</option>
+                  <option>Resolved</option>
+                  <option>Closed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Store</th>
+                    <th>City</th>
+                    <th>Issue</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketsTableBody">
+                  <!-- Same tbody id so JS can fill it -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================
+             STORES SECTION (placeholder)
+        ========================== -->
+        <section id="stores" class="content-section">
+          <h2>Stores</h2>
+          <p>Stores management coming soon.</p>
+        </section>
+
+        <!-- =========================
+             SUPPORT GROUPS SECTION
+        ========================== -->
+        <section id="support-groups" class="content-section">
+          <div class="admin-section">
+            <h2>📋 Support Groups Management</h2>
+
+            <!-- Create Group -->
+            <div class="card create-group-card">
+              <h3><i class="fas fa-plus-circle"></i> Create Support Group</h3>
+              <form id="createGroupForm">
+                <div class="input-group">
+                  <label><i class="fas fa-store"></i> Store</label>
+                  <select id="groupStore" required>
+                    <option value="">Select Store</option>
+                    <option value="store1">store1 - -AC</option>
+                    <option value="store2">store2 - Merchandising</option>
+                    <option value="store3">store3 - POS System</option>
+                    <option value="store4">store4 - SRK-AC POS</option>
+                  </select>
+                </div>
+
+                <div class="input-group">
+                  <label><i class="fas fa-tag"></i> Category</label>
+                  <input
+                    type="text"
+                    id="groupCategory"
+                    placeholder="POS, AC, Merchandising"
+                    required
+                  />
+                </div>
+
+                <div class="input-group">
+                  <label><i class="fas fa-users"></i> Group Name</label>
+                  <input
+                    type="text"
+                    id="groupName"
+                    placeholder="POS Support Team"
+                    required
+                  />
+                </div>
+
+                <div class="input-group">
+                  <label><i class="fas fa-user-friends"></i> Members (comma separated emails)</label>
+                  <textarea
+                    id="groupMembers"
+                    rows="3"
+                    placeholder="john@store3.com, mike@store3.com, tech@store3.com"
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                  <i class="fas fa-save"></i> Create Group
+                </button>
+              </form>
+            </div>
+
+            <!-- Active groups list -->
+            <div class="card groups-list-card">
+              <h3>
+                <i class="fas fa-list"></i>
+                Active Groups (<span id="groupsCount">0</span>)
+              </h3>
+              <div id="groupsList">
+                <div class="empty-state">
+                  <i class="fas fa-users-slash"></i>
+                  <p>No support groups yet. Create your first group above!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================
+             REPORTS SECTION (placeholder)
+        ========================== -->
+        <section id="reports" class="content-section">
+          <h2>Reports</h2>
+          <p>Reports module coming soon.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+    <!-- ADD THIS COMPLETE SCRIPT BEFORE </body> -->
+  <script>
+let tickets = [];  // Global tickets array
+
+// ✅ FIXED loadTickets() - Self-contained
+async function loadTickets() {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch('/api/admin/tickets', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        tickets = await response.json();
+        console.log('Admin tickets loaded:', tickets.length);  // DEBUG
+        
+        // Update stats (if elements exist)
+        const countEl = document.querySelector('#totalTickets');
+        if (countEl) countEl.textContent = tickets.length;
+        
+    } catch (error) {
+        console.error('Admin tickets error:', error);
+    }
+}
+
+// ✅ Simple renderTickets()
+function renderTickets() {
+    const tbody = document.getElementById('ticketsTableBody');
+    if (!tbody) return;
+    
+    if (tickets.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-500">No tickets found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = tickets.map(ticket => `
+        <tr>
+            <td>${ticket.ticket_number || ticket.id}</td>
+            <td>Store ${ticket.store_id}</td>
+            <td>Bengaluru</td>
+            <td>${ticket.title || ticket.category}</td>
+            <td>
+                <span class="priority-badge priority-${ticket.priority?.toLowerCase() || 'medium'}">
+                    ${ticket.priority || 'Medium'}
+                </span>
+            </td>
+            <td>
+                <span class="status-badge status-${ticket.status?.toLowerCase() || 'open'}">
+                    ${ticket.status || 'Open'}
+                </td>
+            <td>${ticket.department || 'Operations'}</td>
+            <td>
+                <button class="btn-small btn-view">View</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Load on page ready
+document.addEventListener('DOMContentLoaded', function() {
+    loadTickets();  // Auto-load admin tickets
+    
+    // Group form handler (keep your existing)
+    const createForm = document.getElementById('createGroupForm');
+    if (createForm) {
+        createForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('store_id', document.getElementById('groupStore').value);
+            formData.append('group_name', document.getElementById('groupName').value);
+            formData.append('category', document.getElementById('groupCategory').value);
+            formData.append('members', document.getElementById('groupMembers').value);
+            
+            try {
+                const response = await fetch('/api/admin/groups', { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.success) {
+                    this.reset();
+                    alert('✅ Group created!');
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        });
+    }
+});
+</script>
+
+
+
+</body>
+</html>

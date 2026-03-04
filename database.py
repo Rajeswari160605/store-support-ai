@@ -1,25 +1,17 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import Session
-from contextlib import contextmanager
+from sqlalchemy.orm import sessionmaker, Session
 
-# Vercel-safe SQLite (works everywhere)
 DATABASE_URL = "sqlite:///./healthglow.db"
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={
-        "check_same_thread": False,  # ✅ FIXES THREAD ERROR
-        "timeout": 30,
-    },
-    pool_pre_ping=True,
-    pool_recycle=300,
+    connect_args={"check_same_thread": False},  # Vercel FIX
+    echo=False
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(bind=engine)
 
-@contextmanager
 def get_db():
     db = SessionLocal()
     try:

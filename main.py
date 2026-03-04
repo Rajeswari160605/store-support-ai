@@ -19,7 +19,7 @@ import uuid
 app_sessions = {} 
 
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel,field_validator
 
 
 SECRET_KEY = "your-super-secret-key-change-in-prod"  # Global
@@ -84,12 +84,22 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 # ---------- Pydantic Models ----------
+# ---------- Pydantic Models ----------
 class SignupRequest(BaseModel):
     name: str
-    email: EmailStr
+    email: str
     store_id: int
     role: str
     password: str
+    
+    @field_validator('email')
+    @classmethod
+    def validate_email(cls, v):
+        import re
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", v):
+            raise ValueError('Invalid email format')
+        return v
+
 
 # ---------- Normalization helpers ----------
 VALID_INTENTS = {"chat", "issue", "status_check", "close_ticket"}

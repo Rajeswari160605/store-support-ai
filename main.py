@@ -53,11 +53,9 @@ from models.SupportGroup import SupportGroup
 from categories import CATEGORIES
 
 app = FastAPI()
-@app.get("/")
-def home():
-    return {"message": "Store Support AI running"}
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 templates = Jinja2Templates(directory="templates")
 
 Base.metadata.create_all(bind=engine)

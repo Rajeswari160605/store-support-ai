@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from fastapi import Depends
 from sqlalchemy.orm import Session
-
+import os
 if os.getenv("VERCEL") or os.getenv("VERCEL_URL"):
     DATABASE_URL = "sqlite:///store_support_ai.db"  # Vercel
 else:

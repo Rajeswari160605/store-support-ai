@@ -4,9 +4,9 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 import os
 if os.getenv("VERCEL") or os.getenv("VERCEL_URL"):
-    DATABASE_URL = "sqlite:///store_support_ai.db"  # Vercel
+    DATABASE_URL = "sqlite:///:memory:"  # In-memory, works everywhere
 else:
-    DATABASE_URL = "mysql+pymysql://root:@localhost/store_support_ai"  # Local
+    DATABASE_URL = "mysql+pymysql://root:@localhost/store_support_ai"
 
 engine = create_engine(DATABASE_URL)
 

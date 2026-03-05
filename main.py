@@ -4,11 +4,11 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from jose import jwt
-from models import Base, get_db 
+
+# ✅ Single clean import
 from models import (
-    User, Ticket, Conversation, Message, SupportGroup, 
-    Base, get_db  );
+    Base, get_db, User, Ticket, Conversation, Message, SupportGroup
+)
 
 
 from sqlalchemy import text

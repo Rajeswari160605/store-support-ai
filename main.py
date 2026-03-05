@@ -5,6 +5,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from jose import jwt
+from models import Base, get_db 
+from models import (
+    User, Ticket, Conversation, Message, SupportGroup, 
+    Base, get_db  );
 
 
 from sqlalchemy import text
@@ -43,7 +47,7 @@ from utils.security import (
     ALGORITHM,
     get_password_hash,
 )
-from database import engine, Base, get_db
+
 from models.user import User
 from models.ticket import Ticket
 from models.conversation import Conversation
@@ -58,7 +62,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 templates = Jinja2Templates(directory="templates")
 
-Base.metadata.create_all(bind=engine)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))

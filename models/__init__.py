@@ -2,6 +2,8 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import pymysql
+pymysql.install_as_MySQLdb() 
 import os
 
 Base = declarative_base()

@@ -987,28 +987,30 @@ def create_ticket(
 
     return {"ticket_number": ticket_number, "already_exists": False}
 
-
 @app.on_event("startup")
-async def startup():
+def startup():  # Sync for seeding
     from models import Base, engine
     Base.metadata.create_all(bind=engine)
     
-    # 🔥 SEED USERS FOR AIVEN (runs once)
     db = Session(engine)
-    users = [
-        ("Store Manager", "store1@healthglow.com", "manager", "store1", "password123"),
-        ("Store Manager", "store3@healthglow.com", "manager", "store3", "password123"),
-        ("Admin User", "admin@healthglow.com", "admin", "store1", "admin123"),
-    ]
-    for name, email, role, store_id, pwd in users:
-        if not db.query(User).filter(User.email == email).first():
-            db.add(User(
-                name=name, email=email, role=role,
-                store_id=store_id,  # String!
-                password=pwd_context.hash(pwd)
-            ))
-            print(f"✅ SEEDED: {email}")
-    db.commit()
-    print("✅ Tables + users created!")
+    try:
+        users = [
+            ("Store Manager", "store1@healthglow.com", "manager", "store1", "password123"),
+            ("Store Manager", "store3@healthglow.com", "manager", "store3", "password123"),
+            ("Admin User", "admin@healthglow.com", "admin", "store1", "admin123"),
+        ]
+        for name, email, role, store_id, pwd in users:  # store_id='store1' string
+            if not db.query(User).filter(User.email == email).first():
+                user = User(
+                    name=name, email=email, role=role,
+                    store_id=store_id,  # ✅ String matches Column(String)
+                    password=pwd_context.hash(pwd)
+                )
+                db.add(user)
+        db.commit()
+        print("✅ Users seeded!")
+    finally:
+        db.close()
+
 
 

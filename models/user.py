@@ -12,4 +12,4 @@ class User(Base):
     password = Column(String(255))
     
     role = Column(Enum('manager','support','admin'))
-    store_id = Column(Integer)
+    store_id = Column(String(20), nullable=False)

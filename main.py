@@ -986,3 +986,12 @@ def create_ticket(
     db.commit()
 
     return {"ticket_number": ticket_number, "already_exists": False}
+
+
+@app.on_event("startup")
+async def create_tables():
+    # Your existing structure: models/__init__.py has Base, engine, get_db
+    from models import Base, engine  # ✅ Correct import
+    Base.metadata.create_all(bind=engine)
+    print("✅ Tables created in Aiven!")
+

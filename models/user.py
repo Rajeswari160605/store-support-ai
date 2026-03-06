@@ -1,15 +1,9 @@
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, TIMESTAMP
-from sqlalchemy.sql import func
-from . import Base
-
-
+from sqlalchemy import Column, Integer, String
 class User(Base):
     __tablename__ = "users"
-
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100))
-    email = Column(String(100), unique=True)
+    email = Column(String(100), unique=True, index=True)
     password = Column(String(255))
-    
-    role = Column(Enum('manager','support','admin'))
-    store_id = Column(String(20), nullable=False)
+    role = Column(String(50))
+    store_id = Column(String(20), nullable=False, index=True)  # ✅ STRING!
